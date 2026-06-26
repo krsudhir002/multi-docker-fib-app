@@ -14,16 +14,16 @@ function Fib() {
   }, []);
 
   const fetchValues = async () => {
-    const seenRes = await axios.get('http://localhost:5000/values/all');
+    const seenRes = await axios.get('/api/values/all');
     setSeenIndexes(seenRes.data);
 
-    const valuesRes = await axios.get('http://localhost:5000/values/current');
+    const valuesRes = await axios.get('/api/values/current');
     setValues(valuesRes.data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('http://localhost:5000/values', { index });
+    await axios.post('/api/values', { index });
     setIndex('');
   };
 
