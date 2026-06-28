@@ -1,0 +1,26 @@
+name: Deply fib-app
+
+on:
+  push:
+    branches:
+      -  main
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Build images
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/fib-client ./client
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/fib-server ./server
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/fib-worker ./worker
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/fib-nginx ./nginx
+      - name: Push images to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/fib-client
+          docker push ${{ secrets.DOCKER_USERNAME }}/fib-server
+          docker push ${{ secrets.DOCKER_USERNAME }}/fib-worker
+          docker push ${{ secrets.DOCKER_USERNAME }}/fib-nginx
