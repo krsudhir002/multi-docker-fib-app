@@ -8,12 +8,7 @@ services:
     image: redis
   
   server:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./server
-    volumes:
-     - /app/node_modules
-     - ./server:/app
+    image: krsudhir002/fib-server
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -23,27 +18,15 @@ services:
       - PGPASSWORD=postgres_password
       - PGDATABASE=postgres
   worker:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./worker
-    volumes:
-      - /app/node_modules
-      - ./worker:/app
+    image: krsudhir002/fib-worker
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
 
   client:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./client
-    volumes:
-      - /app/node_modules
-      - ./client:/app
+    image: krsudhir002/fib-client
   nginx:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
+    image: krsudhir002/fib-nginx
     ports:
       - "80:80"
     restart: always
