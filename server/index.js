@@ -20,9 +20,21 @@ const pgClient = new Pool({
 
 pgClient.on('error',()=> console.log('Lost PG connection'));
 
-pgClient
-        .query('CREATE TABLE IF NOT EXISTS values (number INT)')
-        .catch((err) => console.log(err));
+// Retry logic add kiya
+const connectWithRetry = async () => {
+  while (true) {
+    try {
+      await pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)');
+      console.log('Table created / already exists');
+      break;
+    } catch (err) {
+      console.log('Postgres not ready yet, retrying in 2s...', err.message);
+      await new Promise(res => setTimeout(res, 2000));
+    }
+  }
+};
+
+connectWithRetry();
 
 // redis connection
 const redisClient = redis.createClient({
