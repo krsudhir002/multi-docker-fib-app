@@ -24,3 +24,13 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/fib-server
           docker push ${{ secrets.DOCKER_USERNAME }}/fib-worker
           docker push ${{ secrets.DOCKER_USERNAME }}/fib-nginx
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: fib-app
+          environment_name: fib-app-env
+          region: ap-south-1
+          version_label: ${{ github.sha }}
+          deployment_package: docker-compose.yml
